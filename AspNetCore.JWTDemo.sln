@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.JWTDemo", "AspNetCore.JWTDemo\AspNetCore.JWTDemo.csproj", "{3898EE10-1B34-46A6-8598-692F947C8416}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.JWTDemo.EntityFrameworkCore", "AspNetCore.JWTDemo.EntityFrameworkCore\AspNetCore.JWTDemo.EntityFrameworkCore.csproj", "{EA2FCEBE-B6B4-49C0-A45E-4F98936B7D57}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3898EE10-1B34-46A6-8598-692F947C8416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3898EE10-1B34-46A6-8598-692F947C8416}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3898EE10-1B34-46A6-8598-692F947C8416}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3898EE10-1B34-46A6-8598-692F947C8416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA2FCEBE-B6B4-49C0-A45E-4F98936B7D57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA2FCEBE-B6B4-49C0-A45E-4F98936B7D57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA2FCEBE-B6B4-49C0-A45E-4F98936B7D57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA2FCEBE-B6B4-49C0-A45E-4F98936B7D57}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BACEBF7D-B732-48CE-BF90-ADE95E6339FA}
+	EndGlobalSection
+EndGlobal
