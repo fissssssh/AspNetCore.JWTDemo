@@ -1,7 +1,7 @@
 ﻿namespace AspNetCore.JWTDemo.EntityFrameworkCore.Permissions
 {
     [Flags]
-    public enum ResourceOperation
+    public enum Operation
     {
         None = 0,
         List = 1,
