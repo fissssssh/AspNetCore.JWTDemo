@@ -5,7 +5,7 @@ namespace AspNetCore.JWTDemo.Permissions
 {
     public class RBACAuthorizeAttribute : AuthorizeAttribute
     {
-        public RBACAuthorizeAttribute(Resource resource, Operation operation) : base($"{EntityFrameworkCore.Permissions.AuthorizationPolicyDefinition.RBAC}.{resource}.{(int)operation}")
+        public RBACAuthorizeAttribute(Resource resource, Operation operation) : base($"{EntityFrameworkCore.Permissions.PolicyDefinitions.RBAC}.{resource}.{(int)operation}")
         {
         }
     }

@@ -27,18 +27,18 @@ namespace AspNetCore.JWTDemo.Permissions
 
         public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
         {
-            if (policyName.StartsWith(AuthorizationPolicyDefinition.PermissionPrefix))
+            if (policyName.StartsWith(PolicyDefinitions.PermissionPrefix))
             {
                 var policy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme).RequireAuthenticatedUser();
-                if (policyName.StartsWith(AuthorizationPolicyDefinition.RBAC, StringComparison.InvariantCultureIgnoreCase))
+                if (policyName.StartsWith(PolicyDefinitions.RBAC, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if (AuthorizationPolicyHelper.TryParseRBAC(policyName, out var resource, out var operation))
+                    if (PolicyHelper.TryParseRBAC(policyName, out var resource, out var operation))
                     {
                         policy.AddRequirements(new RBACAuthorizationRequirement(resource, operation));
                         return Task.FromResult<AuthorizationPolicy?>(policy.Build());
                     }
                 }
-                else if (policyName == AuthorizationPolicyDefinition.SELF_ONLY)
+                else if (policyName == PolicyDefinitions.OWNER_ONLY)
                 {
                     policy.Requirements.Add(new OperationAuthorizationRequirement());
                     return Task.FromResult<AuthorizationPolicy?>(policy.Build());

@@ -13,7 +13,7 @@ namespace AspNetCore.JWTDemo.EntityFrameworkCore.Extensions
     {
         public static Task AddPermission<TRole>(this RoleManager<TRole> roleManager, TRole role, Resource resource, Operation operation) where TRole : IdentityRole
         {
-            return roleManager.AddClaimAsync(role, new Claim($"{AuthorizationPolicyDefinition.RBAC}.{resource}", ((int)operation).ToString()));
+            return roleManager.AddClaimAsync(role, new Claim($"{PolicyDefinitions.RBAC}.{resource}", ((int)operation).ToString()));
         }
         public static async Task AddPermissions<TRole>(this RoleManager<TRole> roleManager, TRole role, IEnumerable<KeyValuePair<Resource, Operation>> permissions) where TRole : IdentityRole
         {

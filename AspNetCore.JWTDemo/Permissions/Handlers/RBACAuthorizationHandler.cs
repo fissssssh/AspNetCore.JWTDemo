@@ -20,7 +20,7 @@ namespace AspNetCore.JWTDemo.Permissions
                                          join ur in _context.UserRoles.AsNoTracking() on u.Id equals ur.UserId
                                          join r in _context.Roles.AsNoTracking() on ur.RoleId equals r.Id
                                          join rc in _context.RoleClaims.AsNoTracking() on r.Id equals rc.RoleId
-                                         where u.UserName == context.User.Identity!.Name && rc.ClaimType.StartsWith(EntityFrameworkCore.Permissions.AuthorizationPolicyDefinition.RBAC + "." + requirement.Resource.ToString())
+                                         where u.UserName == context.User.Identity!.Name && rc.ClaimType.StartsWith(EntityFrameworkCore.Permissions.PolicyDefinitions.RBAC + "." + requirement.Resource.ToString())
                                          select new
                                          {
                                              rc.ClaimType,

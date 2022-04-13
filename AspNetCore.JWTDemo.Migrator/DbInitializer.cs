@@ -52,7 +52,7 @@ namespace AspNetCore.JWTDemo.Migrator
                 await _userManager.AddToRoleAsync(adminUser, adminRole.Name);
             }
             var adminPermissions = await _roleManager.GetClaimsAsync(adminRole);
-            var permissions = Enum.GetValues(typeof(Resource)).Cast<Resource>().Where(r => !adminPermissions.Any(p => p.Type == $"{AuthorizationPolicyDefinition.RBAC}.{r}")).ToDictionary(x => x, x => Operation.ReadWrite);
+            var permissions = Enum.GetValues(typeof(Resource)).Cast<Resource>().Where(r => !adminPermissions.Any(p => p.Type == $"{PolicyDefinitions.RBAC}.{r}")).ToDictionary(x => x, x => Operation.ReadWrite);
             await _roleManager.AddPermissions(adminRole, permissions);
             await _db.SaveChangesAsync();
         }

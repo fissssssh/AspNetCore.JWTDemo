@@ -88,8 +88,8 @@ namespace AspNetCore.JWTDemo.Controllers
         public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
         {
             var user = await _userManager.FindByNameAsync(User.Identity!.Name);
-            // 基于资源的授权， 访问者：User 资源：user 策略：SELF_ONLY
-            var authResult = await _authorizationService.AuthorizeAsync(User, user, AuthorizationPolicyDefinition.SELF_ONLY);
+            // 基于资源的授权， 访问者：User 资源：user 策略：OWNER_ONLY
+            var authResult = await _authorizationService.AuthorizeAsync(User, user, PolicyDefinitions.OWNER_ONLY);
             if (authResult.Succeeded)
             {
                 var changePwdResult = await _userManager.ChangePasswordAsync(user, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
@@ -97,7 +97,7 @@ namespace AspNetCore.JWTDemo.Controllers
                 {
                     return Ok();
                 }
-                return BadRequest(changePwdResult);
+                return BadRequest(changePwdResult.Errors);
             }
             else if (User.Identity.IsAuthenticated)
             {

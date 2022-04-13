@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AspNetCore.JWTDemo.EntityFrameworkCore.Models
 {
-    public class User : IdentityUser
+    public class User : IdentityUser, IHasOwner
     {
+        [NotMapped]
+        public string OwnerId => Id;
     }
 }
