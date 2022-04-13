@@ -1,6 +1,7 @@
 ﻿using AspNetCore.JWTDemo.Configurations;
 using AspNetCore.JWTDemo.Dtos;
 using AspNetCore.JWTDemo.EntityFrameworkCore.Models;
+using AspNetCore.JWTDemo.EntityFrameworkCore.Permissions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +20,15 @@ namespace AspNetCore.JWTDemo.Controllers
         private readonly UserManager<User> _userManager;
         private readonly JwtBearerSettings _jwtBearerSettings;
         private readonly SignInManager<User> _signInManager;
-        public AccountController(UserManager<User> userManager, IOptions<JwtBearerSettings> jwtBearerSettingsOption, SignInManager<User> signInManager)
+        private readonly IAuthorizationService _authorizationService;
+        public AccountController(UserManager<User> userManager, IOptions<JwtBearerSettings> jwtBearerSettingsOption, SignInManager<User> signInManager, IAuthorizationService authorizationService)
         {
             _userManager = userManager;
             _jwtBearerSettings = jwtBearerSettingsOption.Value;
             _signInManager = signInManager;
+            _authorizationService = authorizationService;
         }
+
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register(UserRegisterDto registerDto)
@@ -85,6 +89,33 @@ namespace AspNetCore.JWTDemo.Controllers
             return NotFound();
         }
 
+        [HttpPost]
+        [Route("changepassword")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity!.Name);
+            // 基于资源的授权， 访问者：User 资源：user 策略：OWNER_ONLY
+            var authResult = await _authorizationService.AuthorizeAsync(User, user, PolicyDefinitions.OWNER_ONLY);
+            if (authResult.Succeeded)
+            {
+                var changePwdResult = await _userManager.ChangePasswordAsync(user, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
+                if (changePwdResult.Succeeded)
+                {
+                    return Ok();
+                }
+                return BadRequest(changePwdResult.Errors);
+            }
+            else if (User.Identity.IsAuthenticated)
+            {
+                return new ForbidResult();
+            }
+            else
+            {
+                return new ChallengeResult();
+            }
+        }
+
         private string GenerateAccessToken(User user)
         {
             var issuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtBearerSettings.IssuerSigningKey));
@@ -94,7 +125,8 @@ namespace AspNetCore.JWTDemo.Controllers
                 new Claim(ClaimTypes.Name,user.UserName),
                 new Claim(ClaimTypes.Email,user.Email)
             };
-            var token = new JwtSecurityToken(_jwtBearerSettings.Issuer, _jwtBearerSettings.Audience, claims, expires: DateTime.Now.AddHours(1), signingCredentials: credentials);
+            var expires = DateTime.Now.AddHours(1);
+            var token = new JwtSecurityToken(_jwtBearerSettings.Issuer, _jwtBearerSettings.Audience, claims, expires: expires, signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }

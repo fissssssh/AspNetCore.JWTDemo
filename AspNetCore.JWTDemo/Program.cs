@@ -1,7 +1,9 @@
 using AspNetCore.JWTDemo.Configurations;
 using AspNetCore.JWTDemo.EntityFrameworkCore;
 using AspNetCore.JWTDemo.EntityFrameworkCore.Models;
+using AspNetCore.JWTDemo.Permissions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -39,12 +41,12 @@ builder.Services.AddIdentityCore<User>(opts =>
     opts.Password.RequireUppercase = false;
     opts.Password.RequiredLength = 6;
 }).AddRoles<Role>().AddSignInManager().AddEntityFrameworkStores<JWTDemoDbContext>().AddDefaultTokenProviders();
-// 添加J身份认证服务，身份认证中间件可以解析JWT Token并给HttpContext.User赋值
+// 添加Jwt身份认证服务，身份认证中间件可以解析JWT Token并给HttpContext.User赋值
 var jwtSettings = new JwtBearerSettings();
 var jwtSettingsSection = builder.Configuration.GetSection("JwtBearer");
 jwtSettingsSection.Bind(jwtSettings);
 builder.Services.Configure<JwtBearerSettings>(jwtSettingsSection);
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opts =>
+builder.Services.AddAuthentication().AddJwtBearer(opts =>
 {
     opts.IncludeErrorDetails = true;
     opts.TokenValidationParameters = new TokenValidationParameters
@@ -56,10 +58,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ClockSkew = TimeSpan.FromSeconds(30),
+        ClockSkew = TimeSpan.Zero,
     };
 });
 // 添加授权服务
+// 注册授权策略提供程序
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, RBACPolicyProvider>();
+// 注册授权处理程序
+builder.Services.AddScoped<IAuthorizationHandler, OwnerOnlyAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, RBACAuthorizationHandler>();
 builder.Services.AddAuthorization();
 var app = builder.Build();
 
