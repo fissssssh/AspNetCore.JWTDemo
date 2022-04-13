@@ -4,6 +4,7 @@ using AspNetCore.JWTDemo.EntityFrameworkCore.Models;
 using AspNetCore.JWTDemo.Permissions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -39,7 +40,7 @@ builder.Services.AddIdentityCore<User>(opts =>
     opts.Password.RequireLowercase = false;
     opts.Password.RequireUppercase = false;
     opts.Password.RequiredLength = 6;
-}).AddRoles<Role>().AddEntityFrameworkStores<JWTDemoDbContext>();
+}).AddRoles<Role>().AddSignInManager().AddEntityFrameworkStores<JWTDemoDbContext>().AddDefaultTokenProviders();
 // 添加Jwt身份认证服务，身份认证中间件可以解析JWT Token并给HttpContext.User赋值
 var jwtSettings = new JwtBearerSettings();
 var jwtSettingsSection = builder.Configuration.GetSection("JwtBearer");

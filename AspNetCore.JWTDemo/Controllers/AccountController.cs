@@ -19,11 +19,13 @@ namespace AspNetCore.JWTDemo.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly JwtBearerSettings _jwtBearerSettings;
+        private readonly SignInManager<User> _signInManager;
         private readonly IAuthorizationService _authorizationService;
-        public AccountController(UserManager<User> userManager, IOptions<JwtBearerSettings> jwtBearerSettingsOption, IAuthorizationService authorizationService)
+        public AccountController(UserManager<User> userManager, IOptions<JwtBearerSettings> jwtBearerSettingsOption, SignInManager<User> signInManager, IAuthorizationService authorizationService)
         {
             _userManager = userManager;
             _jwtBearerSettings = jwtBearerSettingsOption.Value;
+            _signInManager = signInManager;
             _authorizationService = authorizationService;
         }
 
@@ -66,7 +68,12 @@ namespace AspNetCore.JWTDemo.Controllers
             {
                 return NotFound("user does not exists.");
             }
-            return Ok(new { access_token = GenerateAccessToken(user) });
+            var result = await _signInManager.CheckPasswordSignInAsync(user, authDto.Password, true);
+            if (result.Succeeded)
+            {
+                return Ok(new { access_token = GenerateAccessToken(user) });
+            }
+            return BadRequest(result.ToString());
         }
 
         [HttpGet]
